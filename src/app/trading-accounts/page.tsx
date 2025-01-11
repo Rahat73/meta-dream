@@ -28,6 +28,10 @@ const TradingAccounts = () => {
 
   const accounts = JSON.parse(localStorage.getItem("accounts") || "[]");
 
+  const filteredAccounts = accounts.filter(
+    (account: TAccountInfo) => account.accountType === value
+  );
+
   return (
     <div>
       <div className="flex items-center justify-between gap-4 p-4 border-b">
@@ -100,7 +104,7 @@ const TradingAccounts = () => {
 
       {viewOption === "list" ? (
         <div className="p-6 space-y-4">
-          {accounts.map((account: TAccountInfo, index: number) => (
+          {filteredAccounts.map((account: TAccountInfo, index: number) => (
             <div key={index}>
               <AccountInfoCardHorizontal accountInfo={account} />
             </div>
@@ -108,7 +112,7 @@ const TradingAccounts = () => {
         </div>
       ) : (
         <div className="p-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {accounts.map((account: TAccountInfo, index: number) => (
+          {filteredAccounts.map((account: TAccountInfo, index: number) => (
             <div key={index}>
               <AccountInfoCard accountInfo={account} />
             </div>
