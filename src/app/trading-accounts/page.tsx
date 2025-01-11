@@ -14,11 +14,12 @@ import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { TAccountInfo } from "@/types";
 import { Grid, List, Plus, Search } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 const TradingAccounts = () => {
   const [value, setValue] = useState("Real");
   const [viewOption, setViewOption] = useState("list");
+  const [accounts, setAccounts] = useState<TAccountInfo[]>([]);
 
   const router = useRouter();
 
@@ -26,7 +27,14 @@ const TradingAccounts = () => {
     setValue(value);
   };
 
-  const accounts = JSON.parse(localStorage.getItem("accounts") || "[]");
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const storedAccounts = JSON.parse(
+        localStorage.getItem("accounts") || "[]"
+      );
+      setAccounts(storedAccounts);
+    }
+  }, []);
 
   const filteredAccounts = accounts.filter(
     (account: TAccountInfo) => account.accountType === value
