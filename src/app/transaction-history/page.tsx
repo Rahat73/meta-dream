@@ -16,8 +16,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { ArrowUp01, Search, Upload } from "lucide-react";
-import React from "react";
+import { Search, Upload } from "lucide-react";
 
 const transactions = [
   {
