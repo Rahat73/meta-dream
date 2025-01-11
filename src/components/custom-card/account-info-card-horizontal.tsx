@@ -1,37 +1,38 @@
+import { TAccountInfo } from "@/types";
 import {
   ArrowDown,
   ArrowUpRight,
-  BarChart2,
   BarChart4,
   ChevronDown,
-  LineChart,
   MoreVertical,
-  Wallet,
 } from "lucide-react";
 import { Button } from "../ui/button";
 import { Card, CardContent } from "../ui/card";
 
-const AccountInfoCardHorizontal = () => {
+const AccountInfoCardHorizontal = ({
+  accountInfo,
+}: {
+  accountInfo: TAccountInfo;
+}) => {
+  const { accountType, currency, nickname, type, platform } = accountInfo;
+
   return (
-    <Card className="max-w-4xl w-full bg-white shadow-sm">
+    <Card className="max-w-6xl w-full bg-white shadow-sm">
       <CardContent className="p-5">
         <div className="space-y-4">
           <div className="flex items-center justify-between">
             <div className="flex gap-2 text-sm">
               <div className="flex items-center gap-1.5 bg-blue-100 text-blue-600 px-3 py-1.5 rounded-md font-medium">
-                <Wallet className="h-4 w-4" />
-                Real
+                {accountType}
               </div>
               <div className="flex items-center gap-1.5 bg-blue-50 px-3 py-1.5 rounded-md text-gray-600">
-                <BarChart2 className="h-4 w-4" />
-                MT5
+                {platform}
               </div>
               <div className="flex items-center gap-1.5 bg-blue-50 px-3 py-1.5 rounded-md text-gray-600">
-                <LineChart className="h-4 w-4" />
-                Standard
+                {type}
               </div>
               <div className="flex items-center gap-1.5 px-3 bg-blue-50 py-1.5 rounded-md text-gray-600">
-                #3243466
+                {nickname}
               </div>
             </div>
             <ChevronDown className="text-gray-600" />
@@ -41,7 +42,9 @@ const AccountInfoCardHorizontal = () => {
             <div className="space-y-2">
               <div className="text-[32px] font-semibold tracking-tight">
                 123<span className="text-xl">.00</span>{" "}
-                <span className="text-lg font-normal text-gray-600">USD</span>
+                <span className="text-lg font-normal text-gray-600">
+                  {currency}
+                </span>
               </div>
             </div>
 

@@ -1,0 +1,32 @@
+export const accountTypes = [
+  {
+    id: 1,
+    title: "Standard",
+    subtitle: "Recommended",
+    color: "blue",
+    description: "Most popular! Great account for all types of traders",
+    minDeposit: 10,
+    spread: 0.2,
+    commision: 0,
+  },
+  {
+    id: 2,
+    title: "Pro",
+    subtitle: "Professional",
+    color: "red",
+    description: "Most popular! Great account for all types of traders",
+    minDeposit: 10,
+    spread: 0.2,
+    commision: 0,
+  },
+  {
+    id: 3,
+    title: "Raw Spread",
+    subtitle: "Instant",
+    color: "green",
+    description: "Most popular! Great account for all types of traders",
+    minDeposit: 10,
+    spread: 0.2,
+    commision: 0,
+  },
+];

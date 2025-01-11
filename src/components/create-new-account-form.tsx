@@ -24,9 +24,12 @@ import {
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ChevronRight, Eye, EyeOff } from "lucide-react";
 import { toast } from "sonner";
+import { accountTypes } from "@/app/constants";
+import AccountTypeCard from "./custom-card/account-type-card";
+import { TAccountType } from "@/types";
 
 const formSchema = z.object({
-  accountType: z.enum(["demo", "real"], {
+  accountType: z.enum(["Demo", "Real"], {
     required_error: "Please select an account type",
   }),
   leverage: z.string({
@@ -46,13 +49,19 @@ const formSchema = z.object({
 
 type FormValues = z.infer<typeof formSchema>;
 
-export default function CreateAccountForm() {
+const CreateAccountForm = ({
+  accountType,
+  platform,
+}: {
+  accountType: string;
+  platform: string;
+}) => {
   const [showPassword, setShowPassword] = useState(false);
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      accountType: "demo",
+      accountType: "Demo",
       leverage: "1:200",
       currency: "USD",
       nickname: "",
@@ -61,173 +70,200 @@ export default function CreateAccountForm() {
   });
 
   function onSubmit(values: FormValues) {
-    console.log(values);
+    localStorage.setItem(
+      "accounts",
+      JSON.stringify([
+        ...(JSON.parse(
+          localStorage.getItem("accounts") || "[]"
+        ) as FormValues[]),
+        { ...values, type: accountType, platform },
+      ])
+    );
+    form.reset({
+      accountType: "Demo",
+      leverage: "1:200",
+      currency: "USD",
+      nickname: "",
+      password: "",
+    });
+    toast.success("Account created successfully");
   }
 
+  const selectedAccountType = accountTypes.find(
+    (account) => account.title === accountType
+  );
+
   return (
-    <div className="p-4">
-      <Form {...form}>
-        <form
-          onSubmit={form.handleSubmit(onSubmit)}
-          className="max-w-xl w-full space-y-6"
-        >
-          <div className="border shadow-lg p-4 rounded-sm">
-            <FormField
-              control={form.control}
-              name="accountType"
-              render={({ field }) => (
-                <FormItem className="space-y-1">
-                  <FormLabel className="text-sm font-medium text-gray-700">
-                    Account type
-                  </FormLabel>
-                  <FormControl>
-                    <Tabs
-                      onValueChange={field.onChange}
-                      defaultValue={field.value}
-                      className="w-full"
-                    >
-                      <TabsList className="grid w-full grid-cols-2 bg-gray-100 p-1 rounded-md">
-                        <TabsTrigger
-                          value="demo"
-                          className="data-[state=active]:bg-white data-[state=active]:shadow-sm"
-                        >
-                          Demo
-                        </TabsTrigger>
-                        <TabsTrigger
-                          value="real"
-                          className="data-[state=active]:bg-white data-[state=active]:shadow-sm"
-                        >
-                          Real
-                        </TabsTrigger>
-                      </TabsList>
-                    </Tabs>
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <p className="text-sm text-gray-500 mt-2 mb-4">
-              Risk-free account. Trade with virtual money
-            </p>
-
-            <div className="space-y-4">
+    <div className="grid grid-cols-1 md:grid-cols-6 gap-4 p-6">
+      <div className="col-span-4">
+        <Form {...form}>
+          <form
+            onSubmit={form.handleSubmit(onSubmit)}
+            className="max-w-4xl w-full space-y-6"
+          >
+            <div className="border shadow-lg p-4 rounded-sm">
               <FormField
                 control={form.control}
-                name="leverage"
+                name="accountType"
                 render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Maximum leverage</FormLabel>
-                    <Select
-                      onValueChange={field.onChange}
-                      defaultValue={field.value}
-                    >
-                      <FormControl>
-                        <SelectTrigger className="w-full bg-white">
-                          <SelectValue placeholder="Select leverage" />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        <SelectItem value="1:200">1:200</SelectItem>
-                        <SelectItem value="1:400">1:400</SelectItem>
-                        <SelectItem value="1:500">1:500</SelectItem>
-                      </SelectContent>
-                    </Select>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name="currency"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Currency</FormLabel>
-                    <Select
-                      onValueChange={field.onChange}
-                      defaultValue={field.value}
-                    >
-                      <FormControl>
-                        <SelectTrigger className="w-full bg-white">
-                          <SelectValue placeholder="Select currency" />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        <SelectItem value="USD">USD</SelectItem>
-                        <SelectItem value="EUR">EUR</SelectItem>
-                        <SelectItem value="GBP">GBP</SelectItem>
-                      </SelectContent>
-                    </Select>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name="nickname"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Account nickname</FormLabel>
+                  <FormItem className="space-y-1">
+                    <FormLabel className="text-sm font-medium text-gray-700">
+                      Account type
+                    </FormLabel>
                     <FormControl>
-                      <Input
-                        placeholder="Standard"
-                        className="bg-white"
-                        {...field}
-                      />
+                      <Tabs
+                        onValueChange={field.onChange}
+                        defaultValue={field.value}
+                        className="w-full"
+                      >
+                        <TabsList className="grid w-full grid-cols-2 bg-gray-100 p-1 rounded-md">
+                          <TabsTrigger
+                            value="Demo"
+                            className="data-[state=active]:bg-white data-[state=active]:shadow-sm"
+                          >
+                            Demo
+                          </TabsTrigger>
+                          <TabsTrigger
+                            value="Real"
+                            className="data-[state=active]:bg-white data-[state=active]:shadow-sm"
+                          >
+                            Real
+                          </TabsTrigger>
+                        </TabsList>
+                      </Tabs>
                     </FormControl>
                     <FormMessage />
                   </FormItem>
                 )}
               />
+              <p className="text-sm text-gray-500 mt-2 mb-4">
+                Risk-free account. Trade with virtual money
+              </p>
 
-              <FormField
-                control={form.control}
-                name="password"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Password for this account</FormLabel>
-                    <FormControl>
-                      <div className="relative">
+              <div className="space-y-4">
+                <FormField
+                  control={form.control}
+                  name="leverage"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Maximum leverage</FormLabel>
+                      <Select
+                        onValueChange={field.onChange}
+                        defaultValue={field.value}
+                      >
+                        <FormControl>
+                          <SelectTrigger className="w-full bg-white">
+                            <SelectValue placeholder="Select leverage" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          <SelectItem value="1:200">1:200</SelectItem>
+                          <SelectItem value="1:400">1:400</SelectItem>
+                          <SelectItem value="1:500">1:500</SelectItem>
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="currency"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Currency</FormLabel>
+                      <Select
+                        onValueChange={field.onChange}
+                        defaultValue={field.value}
+                      >
+                        <FormControl>
+                          <SelectTrigger className="w-full bg-white">
+                            <SelectValue placeholder="Select currency" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          <SelectItem value="USD">USD</SelectItem>
+                          <SelectItem value="EUR">EUR</SelectItem>
+                          <SelectItem value="GBP">GBP</SelectItem>
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="nickname"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Account nickname</FormLabel>
+                      <FormControl>
                         <Input
-                          type={showPassword ? "text" : "password"}
-                          placeholder="Create password"
-                          className="bg-white pr-10"
+                          placeholder="Standard"
+                          className="bg-white"
                           {...field}
                         />
-                        <Button
-                          type="button"
-                          variant="ghost"
-                          size="sm"
-                          className="absolute right-0 top-0 h-full px-3 hover:bg-transparent"
-                          onClick={() => setShowPassword(!showPassword)}
-                        >
-                          {showPassword ? (
-                            <EyeOff className="h-4 w-4 text-gray-400" />
-                          ) : (
-                            <Eye className="h-4 w-4 text-gray-400" />
-                          )}
-                          <span className="sr-only">
-                            {showPassword ? "Hide password" : "Show password"}
-                          </span>
-                        </Button>
-                      </div>
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
-          </div>
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
 
-          <Button
-            type="submit"
-            className=" bg-blue-500 hover:bg-blue-700 text-white font-medium text-base p-5"
-          >
-            Create account <ChevronRight />
-          </Button>
-        </form>
-      </Form>
+                <FormField
+                  control={form.control}
+                  name="password"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Password for this account</FormLabel>
+                      <FormControl>
+                        <div className="relative">
+                          <Input
+                            type={showPassword ? "text" : "password"}
+                            placeholder="Create password"
+                            className="bg-white pr-10"
+                            {...field}
+                          />
+                          <Button
+                            type="button"
+                            variant="ghost"
+                            size="sm"
+                            className="absolute right-0 top-0 h-full px-3 hover:bg-transparent"
+                            onClick={() => setShowPassword(!showPassword)}
+                          >
+                            {showPassword ? (
+                              <EyeOff className="h-4 w-4 text-gray-400" />
+                            ) : (
+                              <Eye className="h-4 w-4 text-gray-400" />
+                            )}
+                            <span className="sr-only">
+                              {showPassword ? "Hide password" : "Show password"}
+                            </span>
+                          </Button>
+                        </div>
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+            </div>
+
+            <Button
+              type="submit"
+              className=" bg-blue-500 hover:bg-blue-700 text-white font-medium text-base p-5"
+            >
+              Create account <ChevronRight />
+            </Button>
+          </form>
+        </Form>
+      </div>
+      <div className="col-span-2">
+        <AccountTypeCard accountType={selectedAccountType as TAccountType} />
+      </div>
     </div>
   );
-}
+};
+
+export default CreateAccountForm;

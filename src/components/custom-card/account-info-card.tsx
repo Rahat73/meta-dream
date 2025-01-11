@@ -2,8 +2,11 @@ import React from "react";
 import { Card, CardContent } from "../ui/card";
 import { MoreVertical } from "lucide-react";
 import { Button } from "../ui/button";
+import { TAccountInfo } from "@/types";
 
-const AccountInfoCard = () => {
+const AccountInfoCard = ({ accountInfo }: { accountInfo: TAccountInfo }) => {
+  const { accountType, nickname, type, leverage, platform } = accountInfo;
+
   return (
     <Card className="max-w-md w-full bg-white shadow-sm">
       <CardContent className="p-5">
@@ -11,9 +14,9 @@ const AccountInfoCard = () => {
           <div className="flex items-center justify-between border-b pb-4">
             <div className="flex items-center gap-2">
               <span className="bg-blue-50 text-blue-600 px-3 py-1 rounded-md text-sm font-medium">
-                Real
+                {accountType}
               </span>
-              <span className="text-sm text-gray-900">#3243466</span>
+              <span className="text-sm text-gray-900">{nickname}</span>
             </div>
             <Button
               variant="outline"
@@ -32,12 +35,14 @@ const AccountInfoCard = () => {
             </div>
             <div className="flex justify-between items-center border-b pb-1">
               <span className="text-sm text-gray-500">Platform</span>
-              <span className="text-sm text-gray-900 font-semibold">mt5</span>
+              <span className="text-sm text-gray-900 font-semibold">
+                {platform}
+              </span>
             </div>
             <div className="flex justify-between items-center border-b pb-1">
               <span className="text-sm text-gray-500">Type</span>
               <span className="text-sm text-gray-900 font-semibold">
-                Standard
+                {type}
               </span>
             </div>
             <div className="flex justify-between items-center border-b pb-1">
@@ -48,11 +53,15 @@ const AccountInfoCard = () => {
             </div>
             <div className="flex justify-between items-center border-b pb-1">
               <span className="text-sm text-gray-500">Actual leverage</span>
-              <span className="text-sm text-gray-900 font-semibold">1:200</span>
+              <span className="text-sm text-gray-900 font-semibold">
+                {leverage}
+              </span>
             </div>
-            <div className="flex justify-between items-center border-b pb-1">
+            <div className="flex justify-between items-center">
               <span className="text-sm text-gray-500">Max leverage</span>
-              <span className="text-sm text-gray-900 font-semibold">1:200</span>
+              <span className="text-sm text-gray-900 font-semibold">
+                {leverage}
+              </span>
             </div>
           </div>
         </div>
