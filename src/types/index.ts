@@ -1,3 +1,5 @@
+import { StaticImageData } from "next/image";
+
 export type TAccountInfo = {
   accountType: "Demo" | "Real";
   leverage: string;
@@ -17,4 +19,13 @@ export type TAccountType = {
   minDeposit: number;
   spread: number;
   commision: number;
+};
+
+export type TPaymentMethod = {
+  name: string;
+  website: string;
+  logo: StaticImageData;
+  processingTime: string;
+  fee: string;
+  limits: string;
 };

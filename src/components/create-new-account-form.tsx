@@ -27,6 +27,7 @@ import { toast } from "sonner";
 import { accountTypes } from "@/app/constants";
 import AccountTypeCard from "./custom-card/account-type-card";
 import { TAccountType } from "@/types";
+import { useRouter } from "next/navigation";
 
 const formSchema = z.object({
   accountType: z.enum(["Demo", "Real"], {
@@ -57,6 +58,7 @@ const CreateAccountForm = ({
   platform: string;
 }) => {
   const [showPassword, setShowPassword] = useState(false);
+  const router = useRouter();
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
@@ -87,6 +89,7 @@ const CreateAccountForm = ({
       password: "",
     });
     toast.success("Account created successfully");
+    router.push("/");
   }
 
   const selectedAccountType = accountTypes.find(

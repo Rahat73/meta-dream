@@ -36,5 +36,5 @@ export default Navbar;
 
 function getRouteName(pathname: string): string {
   const currentRoute = routes.find((route) => route.href === pathname);
-  return currentRoute ? currentRoute.name : "Page Not Found";
+  return currentRoute ? currentRoute.name : "Trading Accounts";
 }
